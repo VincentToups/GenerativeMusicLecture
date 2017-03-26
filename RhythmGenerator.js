@@ -55,7 +55,7 @@
         return acc.join("");
     };
 
-    RhythmGenerator.prototype.createMeasure = function(){
+    RhythmGenerator.prototype.generateMeasure = function(){
         //convert state to string of the above type
         //we need to pad left, though, because of the way
         //this works
