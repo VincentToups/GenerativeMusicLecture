@@ -7,16 +7,18 @@
         scale = typeof scale === "undefined" ? defaultScale : scale;
         step = typeof step === "undefined" ? 1 : step;
         this.state = initial;
-        this.step = step;
+        this.step = typeof step === "number" ? [step] : step;
         this.scale = scale;
+        this.iteration = 0;
     };
 
     ToneGenerator.prototype.generateTones = function(n){
         var notes = [];
         while(n>0){
             notes.push(this.scale[this.state%this.scale.length]);
-            this.state = this.state + this.step;
+            this.state = this.state + this.step[this.iteration%this.step.length];
             n--;
+            this.iteration++;
         }
         return notes;
     };

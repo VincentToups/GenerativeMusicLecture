@@ -36,8 +36,8 @@ function playMusic(scoreFragments,tempoBPM){
 function main(){
     //We need to generate some sounds to play
 
-    var cbr1 = new Combiner(new ToneGenerator(0,3), new RhythmGenerator("1100220033004400",10));
-    var cbr2 = new Combiner(new ToneGenerator(0,5), new RhythmGenerator("1111222233334444",15));
+    var cbr1 = new Combiner(new ToneGenerator(0,[3,1,5]), new RhythmGenerator("1100220033004400",10));
+    var cbr2 = new Combiner(new ToneGenerator(0,[5,1,3]), new RhythmGenerator("1111222233334444",15));
 
     var score1=cbr1.generateScore(16);
     var score2=cbr2.generateScore(16);
