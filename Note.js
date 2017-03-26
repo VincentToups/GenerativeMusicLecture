@@ -58,6 +58,10 @@
         return this;
     };
 
+    Note.prototype.getDuration = function(){
+        return this.duration;
+    };
+
     Note.prototype.setTone = function(tone){
         // We will let notes persist without a tone
         // As this will be make generating music a little easier.
