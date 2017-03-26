@@ -35,13 +35,48 @@ function playMusic(scoreFragments,tempoBPM, readyCallback){
     }).set({buddies:master}).start());
 }
 
+function getQueryParam(name,otherwise) {
+    var url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( url );
+    return results == null ? otherwise : results[1];
+}
+
+function toInt(s){
+    return Math.floor(+s)%8;
+}
+
+function getUrlRoot(){
+    return location.href.split("?")[0];
+}
+
 function main(){
     //We need to generate some sounds to play
 
+    var tgSeq1=getQueryParam("tgSeq1","315").split("").map(toInt);
+    var tgSeq2=getQueryParam("tgSeq2","513").split("").map(toInt);
+    var rhythm1=getQueryParam("rhythm1","1100220033004400");
+    var rhythm2=getQueryParam("rhythm2","1111222233334444");
+    var rhythm1Skip=toInt(getQueryParam("rhythm1Skip","10"));
+    var rhythm2Skip=toInt(getQueryParam("rhythm2Skip","15"));
+
+    var thisUrl=[getUrlRoot(),
+                 "?",
+                 "tgSeq1=",
+                 tgSeq1.join(""),"&",
+                 "tgSeq2=",
+                 tgSeq2.join(""),"&",
+                 "rhythm1=",rhythm1,"&",
+                 "rhythm2=",rhythm2,"&",
+                 "rhythm1Skip=",rhythm1Skip,"&",
+                 "rhythm2Skip=",rhythm2Skip].join("");
+    
     var tempo = 60;
 
-    var cbr1 = new Combiner(new ToneGenerator(0,[3,1,5]), new RhythmGenerator("1100220033004400",10));
-    var cbr2 = new Combiner(new ToneGenerator(0,[5,1,3]), new RhythmGenerator("1111222233334444",15));
+    var cbr1 = new Combiner(new ToneGenerator(0,tgSeq1), new RhythmGenerator(rhythm1,10));
+    var cbr2 = new Combiner(new ToneGenerator(0,tgSeq2), new RhythmGenerator(rhythm2,15));
 
     var score1=cbr1.generateScore(16,4);
     var score2=cbr2.generateScore(16,4);
@@ -49,6 +84,15 @@ function main(){
     // Setup visualization:
 
     var cnvs = document.querySelector("#score-canvas");
+    var lnk = document.createElement("a");
+    lnk.href=thisUrl;
+    lnk.innerHTML = "(Link)";
+    var spn = document.createElement("span");
+    spn.innerHTML = " Try editing the query parameters to vary the generated composition.";
+    document.body.insertBefore(lnk,cnvs);
+    var br = document.createElement("br");
+    document.body.insertBefore(br,cnvs);
+    document.body.insertBefore(spn,br);
 
     // Handle pixel density issues.
     setHiDPICanvas(cnvs,window.innerWidth*0.9,400);
