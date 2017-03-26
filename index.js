@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded",main);
 
-function playMusic(scoreFragments,tempoBPM){
+function playMusic(scoreFragments,tempoBPM, readyCallback){
+    readyCallback = typeof readyCallback === "undefined" ?
+        function(){} : readyCallback;
     tempoBPM = typeof tempoBPM === "undefined" ? 60 : tempoBPM;
     var env   = T("adsr", {d:3000, s:0, r:600});
     var synth = T("SynthDef", {mul:0.45, poly:8});
@@ -28,20 +30,35 @@ function playMusic(scoreFragments,tempoBPM){
         return voiceDescriptions[i%voiceDescriptions.length]+" "+fragment;
     });
 
-    T("mml", {mml:scores}, synth).on("ended", function() {
+    readyCallback(T("mml", {mml:scores}, synth).on("ended", function() {
         this.stop();
-    }).set({buddies:master}).start();
+    }).set({buddies:master}).start());
 }
 
 function main(){
     //We need to generate some sounds to play
 
+    var tempo = 60;
+
     var cbr1 = new Combiner(new ToneGenerator(0,[3,1,5]), new RhythmGenerator("1100220033004400",10));
     var cbr2 = new Combiner(new ToneGenerator(0,[5,1,3]), new RhythmGenerator("1111222233334444",15));
 
-    var score1=cbr1.generateScore(16);
-    var score2=cbr2.generateScore(16);
+    var score1=cbr1.generateScore(16,4);
+    var score2=cbr2.generateScore(16,4);
+
+    // Setup visualization:
+
+    var cnvs = document.querySelector("#score-canvas");
+
+    // Handle pixel density issues.
+    setHiDPICanvas(cnvs,window.innerWidth*0.9,400);
+
+    window.view = new NotesView(cnvs,[score1,score2],tempo);
     
-    playMusic([Note.notesToMML(score1),Note.notesToMML(score2)]);
+    playMusic([Note.notesToMML(score1),Note.notesToMML(score2)],
+              tempo,
+              function(){
+                  window.view.start();
+              });
     
 }
