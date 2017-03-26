@@ -37,7 +37,7 @@
     }
 
     function RhythmGenerator(initialState, step){
-        step = typeof step === "undefined" ? 1 : 0;
+        step = typeof step === "undefined" ? 1 : step;
         this.state = typeof initialState==="string" ?
             rhythmStringToNumber(initialState) :
             initialState;
@@ -60,7 +60,7 @@
         //we need to pad left, though, because of the way
         //this works
         var sixteenths = numberToRhythmString(this.state);
-
+        
         // Go to the next state;
         this.state = this.state + this.step;
         var lastGroup = undefined;
