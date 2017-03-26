@@ -117,6 +117,14 @@
                 strrep(octDeMod,nOctaves));
     };
 
+    Note.prototype.getLatinName = function(){
+        return this.tone.name+(this.tone.octave.toString(10));
+    };
+
+    Note.prototype.lengthInSixteenthNotes = function(){
+        return this.duration;
+    };
+
     Note.notesToMML = function(notes){
         return notes.map(function(note){
             return note.toMML();
