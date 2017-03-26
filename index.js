@@ -15,7 +15,7 @@ function playMusic(scoreFragments,tempoBPM){
     var mod    = T("sin", {freq:2, add:3200, mul:800, kr:1});
     master = T("eq", {params:{lf:[800, 0.5, -2], mf:[6400, 0.5, 4]}}, master);
     master = T("phaser", {freq:mod, Q:2, steps:4}, master);
-    master = T("delay", {time:"BPM60 L16", fb:0.65, mix:0.25}, master);
+    master = T("delay", {time:"BPM__tempo__ L16".replace("__tempo__",tempoBPM), fb:0.65, mix:0.25}, master);
 
     var voiceDescriptions = [
         "t__tempo__ l4 v6 q2 o5",
@@ -36,7 +36,12 @@ function playMusic(scoreFragments,tempoBPM){
 function main(){
     //We need to generate some sounds to play
 
-    var score1="", score2="";
-    playMusic([score1,score2]);
+    var cbr1 = new Combiner(new ToneGenerator(0,3), new RhythmGenerator("1100220033004400",10));
+    var cbr2 = new Combiner(new ToneGenerator(0,5), new RhythmGenerator("1111222233334444",15));
+
+    var score1=cbr1.generateScore(16);
+    var score2=cbr2.generateScore(16);
+    
+    playMusic([Note.notesToMML(score1),Note.notesToMML(score2)]);
     
 }
