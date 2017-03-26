@@ -18,7 +18,7 @@ function playMusic(scoreFragments,tempoBPM){
     master = T("delay", {time:"BPM60 L16", fb:0.65, mix:0.25}, master);
 
     var voiceDescriptions = [
-        "t__tempo__ l4 v6 q2 o3",
+        "t__tempo__ l4 v6 q2 o5",
         "t__tempo__ v14 l4 o6"
     ].map(function(voice){
         return voice.replace("__tempo__",tempoBPM);

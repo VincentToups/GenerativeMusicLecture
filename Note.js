@@ -29,14 +29,14 @@
         }
         if(tone===""){
             return {
-                noteName:noteName,
+                name:noteName,
                 modifier:modifier,
                 octave:0
             };
         }
         if(!parsesAsOctave(tone)) throw new Error("Can't parse octave from "+tone);
         return {
-            noteName:noteName,
+            name:noteName,
             modifier:modifier,
             octave:+tone
         };        
@@ -71,6 +71,56 @@
 
     Note.prototype.isRest = function(){
         return this.rest;
+    };
+
+    // A utility which replicates a string N
+    // times, inserting del between each replication.
+    function strrep(s,n,del){
+        del = typeof del === "undefined" ? "" : del;
+        if(n===0) return "";
+        if(n===1) return s;
+        var out = s;
+        n--;
+        while(n>0){
+            out = out+del+s;
+            n--;
+        };
+        return out;
+    };
+
+    // We need to write some code to convert our notes to
+    // Music Macro Language
+    // This goes way back.
+    // Luckily, we don't really need to understand that much about it
+    // > goes up an octave, < goes down an octave
+    // and we use & to indicate ties.
+    // Since we are thinking purely in 16th Notes, we'll use ties
+    // for everything. We'll just build up each note by raising to the right
+    // octave, tying together enough 16th notes to add up to our duration
+    // and then dropping back down
+    Note.prototype.toMML = function(){
+        var octMod = this.tone.octave === 0 ? "" :
+                this.tone.octave > 0 ? ">" :
+                this.tone.octave < 0 ? "<" : "";
+        // The operator to undo octave modifications.
+        var octDeMod = this.tone.octave === 0 ? "" :
+                this.tone.octave > 0 ? "<" :
+                this.tone.octave < 0 ? ">" : "";        
+        var nOctaves = Math.abs(this.tone.octave);
+        // in MML + means sharp, - means flat
+        var modifier = this.tone.modifier === "" ? "" :
+                this.tone.modifier === "#" ? "+" :
+                this.tone.modifier === "b" ? "-" : "";
+        
+        return (strrep(octMod,nOctaves)+
+                strrep(this.tone.name.toLowerCase()+modifier+"16",this.getDuration(),"&")+
+                strrep(octDeMod,nOctaves));
+    };
+
+    Note.notesToMML = function(notes){
+        return notes.map(function(note){
+            return note.toMML();
+        }).join(" ");
     };
 
     // Put Note in the global namespace;
