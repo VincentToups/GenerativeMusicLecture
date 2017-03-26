@@ -8,7 +8,16 @@
             rhythmGen;
     };
 
-    Combiner.prototype.generateScore = function(nMeasures){
+    function repeatSequence(s,n){
+        var acc = [];
+        for(var i = 0; i < n; i++){
+            acc.push(s);
+        }
+        return [].concat.apply([],acc);
+    }
+
+    Combiner.prototype.generateScore = function(nMeasures,nRepeat){
+        nRepeat = typeof nRepeat === "undefined" ? 1 : nRepeat;
         var notes = [];
         var tones,rhythm;
         while(nMeasures>0){
@@ -25,7 +34,7 @@
             notes.push(rhythm);
             nMeasures--;
         }
-        return [].concat.apply([],notes);
+        return repeatSequence([].concat.apply([],notes),nRepeat);
     };
     
     global.Combiner = Combiner;
