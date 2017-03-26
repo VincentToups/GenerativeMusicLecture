@@ -44,8 +44,12 @@ function getQueryParam(name,otherwise) {
     return results == null ? otherwise : results[1];
 }
 
-function toInt(s){
+function toToneStep(s){
     return Math.floor(+s)%8;
+}
+
+function toInt(s){
+    return Math.floor(+s);
 }
 
 function getUrlRoot(){
@@ -55,8 +59,8 @@ function getUrlRoot(){
 function main(){
     //We need to generate some sounds to play
 
-    var tgSeq1=getQueryParam("tgSeq1","315").split("").map(toInt);
-    var tgSeq2=getQueryParam("tgSeq2","513").split("").map(toInt);
+    var tgSeq1=getQueryParam("tgSeq1","315").split("").map(toToneStep);
+    var tgSeq2=getQueryParam("tgSeq2","513").split("").map(toToneStep);
     var rhythm1=getQueryParam("rhythm1","1100220033004400");
     var rhythm2=getQueryParam("rhythm2","1111222233334444");
     var rhythm1Skip=toInt(getQueryParam("rhythm1Skip","10"));
@@ -75,8 +79,8 @@ function main(){
     
     var tempo = 60;
 
-    var cbr1 = new Combiner(new ToneGenerator(0,tgSeq1), new RhythmGenerator(rhythm1,10));
-    var cbr2 = new Combiner(new ToneGenerator(0,tgSeq2), new RhythmGenerator(rhythm2,15));
+    var cbr1 = new Combiner(new ToneGenerator(0,tgSeq1), new RhythmGenerator(rhythm1,rhythm1Skip));
+    var cbr2 = new Combiner(new ToneGenerator(0,tgSeq2), new RhythmGenerator(rhythm2,rhythm2Skip));
 
     var score1=cbr1.generateScore(16,4);
     var score2=cbr2.generateScore(16,4);
