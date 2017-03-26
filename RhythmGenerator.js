@@ -62,7 +62,7 @@
         var sixteenths = numberToRhythmString(this.state);
 
         // Go to the next state;
-        this.state = this.initialState + this.step;
+        this.state = this.state + this.step;
         var lastGroup = undefined;
         var out = [];
         var c = undefined;
